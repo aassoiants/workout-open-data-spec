@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://wodis.dev/schema/1.0.0/wodis.schema.json",
+  "$id": "https://wodis.dev/schema/v1.0.0/wodis.schema.json",
   "title": "Workout Open Data Interchange Specification (WODIS)",
   "description": "A portable, human-readable, machine-parseable format for logging resistance-training sessions. This schema defines the structure of a single workout session including exercises, sets, and optional per-rep data.",
   "type": "object",
@@ -8,15 +8,18 @@
   "additionalProperties": true,
   "properties": {
     "wodis_version": {
+      "title": "WODIS Version",
       "type": "string",
       "enum": ["1.0.0"],
       "description": "The version of the WODIS specification this document conforms to."
     },
     "meta": {
+      "title": "Meta",
       "$ref": "#/$defs/meta",
       "description": "Metadata about the recording source, athlete, and entry method."
     },
     "session": {
+      "title": "Session",
       "$ref": "#/$defs/session",
       "description": "The workout session containing exercises and sets."
     }
@@ -30,19 +33,23 @@
       "additionalProperties": true,
       "properties": {
         "source": {
+          "title": "Source",
           "type": "string",
           "description": "The application or method that originally recorded this session (e.g. 'strong', 'hevy', 'fitbod')."
         },
         "entry_method": {
+          "title": "Entry Method",
           "type": "string",
           "enum": ["manual", "device_sync", "imported_csv"],
           "description": "How the data was entered into the source application."
         },
         "athlete": {
+          "title": "Athlete",
           "type": "string",
           "description": "Display name or identifier for the person who performed the workout."
         },
         "_extra": {
+          "title": "Extra",
           "type": "object",
           "additionalProperties": true,
           "description": "App-specific extension data. MUST be preserved on round-trip import/export."
@@ -57,24 +64,29 @@
       "additionalProperties": true,
       "properties": {
         "started_at": {
+          "title": "Started At",
           "type": "string",
           "format": "date-time",
           "description": "ISO 8601 date-time when the session began."
         },
         "ended_at": {
+          "title": "Ended At",
           "type": "string",
           "format": "date-time",
           "description": "ISO 8601 date-time when the session ended."
         },
         "location": {
+          "title": "Location",
           "type": "string",
           "description": "Name or description of the gym or location where the session took place."
         },
         "split_type": {
+          "title": "Split Type",
           "type": "string",
           "description": "Training split label for this session (e.g. 'push', 'pull', 'legs', 'upper', 'full body')."
         },
         "exercises": {
+          "title": "Exercises",
           "type": "array",
           "minItems": 1,
           "items": {
@@ -83,10 +95,12 @@
           "description": "Ordered list of exercises performed during this session."
         },
         "notes": {
+          "title": "Notes",
           "type": "string",
           "description": "Free-text notes about the session as a whole."
         },
         "_extra": {
+          "title": "Extra",
           "type": "object",
           "additionalProperties": true,
           "description": "App-specific extension data. MUST be preserved on round-trip import/export."
@@ -101,28 +115,24 @@
       "additionalProperties": true,
       "properties": {
         "display_name": {
+          "title": "Display Name",
           "type": "string",
           "description": "Human-readable name of the exercise as shown in the source app (e.g. 'Bench Press (Barbell)')."
         },
         "started_at": {
+          "title": "Started At",
           "type": "string",
           "format": "date-time",
           "description": "ISO 8601 date-time when this exercise began within the session."
         },
-        "sets": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/set"
-          },
-          "description": "Ordered list of sets performed for this exercise."
-        },
         "canonical_ids": {
+          "title": "Canonical IDs",
           "type": "object",
           "additionalProperties": true,
           "description": "Map of namespace to canonical exercise identifier (e.g. {\"wger\": \"192\", \"exrx\": \"bench-press-barbell\"})."
         },
         "muscle_groups": {
+          "title": "Muscle Groups",
           "type": "array",
           "items": {
             "type": "string"
@@ -130,14 +140,26 @@
           "description": "List of primary muscle groups targeted by this exercise (e.g. ['chest', 'triceps', 'anterior_deltoid'])."
         },
         "variation": {
+          "title": "Variation",
           "type": "string",
           "description": "Specific variation or modifier for the exercise (e.g. 'incline', 'close-grip', 'pause')."
         },
+        "sets": {
+          "title": "Sets",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/set"
+          },
+          "description": "Ordered list of sets performed for this exercise."
+        },
         "notes": {
+          "title": "Notes",
           "type": "string",
           "description": "Free-text notes about this exercise."
         },
         "_extra": {
+          "title": "Extra",
           "type": "object",
           "additionalProperties": true,
           "description": "App-specific extension data. MUST be preserved on round-trip import/export."
@@ -152,15 +174,18 @@
       "additionalProperties": true,
       "properties": {
         "reps_completed": {
+          "title": "Reps Completed",
           "type": "integer",
           "minimum": 0,
           "description": "Number of repetitions completed in this set."
         },
         "load_kg": {
+          "title": "Load (kg)",
           "type": "number",
-          "description": "Load in kilograms used for this set. Negative values indicate assisted weight (e.g. assisted pull-ups)."
+          "description": "Load in kilograms used for this set. Negative values indicate assisted weight (e.g. assisted pull-ups). Zero for bodyweight."
         },
         "reps": {
+          "title": "Reps",
           "type": "array",
           "items": {
             "$ref": "#/$defs/rep"
@@ -168,32 +193,38 @@
           "description": "Optional per-rep breakdown with individual load and completion data."
         },
         "set_type": {
+          "title": "Set Type",
           "type": "string",
           "enum": ["working", "warmup", "dropset", "failure", "backoff", "amrap"],
           "description": "Classification of this set's purpose within the exercise."
         },
         "rpe": {
+          "title": "RPE",
           "type": "number",
           "minimum": 1,
           "maximum": 10,
           "description": "Rate of Perceived Exertion on the Borg CR-10 scale (1 = very easy, 10 = maximal effort)."
         },
         "rir": {
+          "title": "RIR",
           "type": "number",
           "minimum": 0,
           "maximum": 5,
           "description": "Reps In Reserve — estimated number of additional reps that could have been performed."
         },
         "rest_seconds_actual": {
+          "title": "Rest Seconds (Actual)",
           "type": "number",
           "minimum": 0,
           "description": "Actual rest time in seconds taken after the previous set before this set began."
         },
         "is_failure": {
+          "title": "Is Failure",
           "type": "boolean",
           "description": "Whether the set was taken to muscular failure."
         },
         "form_flags": {
+          "title": "Form Flags",
           "type": "array",
           "items": {
             "type": "string"
@@ -201,29 +232,35 @@
           "description": "Tags indicating form deviations observed during the set (e.g. ['hip_shift', 'shortened_rom'])."
         },
         "superset_id": {
+          "title": "Superset ID",
           "type": "string",
           "description": "Identifier grouping sets that are performed as part of the same superset."
         },
         "superset_sequence": {
+          "title": "Superset Sequence",
           "type": "integer",
           "minimum": 1,
           "description": "Order of this set within the superset (1-based)."
         },
         "transition_time_seconds": {
+          "title": "Transition Time (Seconds)",
           "type": "number",
           "minimum": 0,
           "description": "Time in seconds to transition between exercises within a superset."
         },
         "timestamp": {
+          "title": "Timestamp",
           "type": "string",
           "format": "date-time",
           "description": "ISO 8601 date-time when this individual set was performed."
         },
         "notes": {
+          "title": "Notes",
           "type": "string",
           "description": "Free-text notes about this set."
         },
         "_extra": {
+          "title": "Extra",
           "type": "object",
           "additionalProperties": true,
           "description": "App-specific extension data. MUST be preserved on round-trip import/export."
@@ -238,20 +275,30 @@
       "additionalProperties": true,
       "properties": {
         "load_kg": {
+          "title": "Load (kg)",
           "type": "number",
           "description": "Load in kilograms for this specific repetition (useful for drop-within-set or variable-load protocols)."
         },
         "assisted": {
+          "title": "Assisted",
           "type": "boolean",
           "description": "Whether this rep was performed with external assistance (e.g. spotter help)."
         },
         "partial": {
+          "title": "Partial",
           "type": "boolean",
           "description": "Whether this rep used a partial range of motion rather than full ROM."
         },
         "completed": {
+          "title": "Completed",
           "type": "boolean",
           "description": "Whether this rep was completed successfully through the intended range of motion."
+        },
+        "_extra": {
+          "title": "Extra",
+          "type": "object",
+          "additionalProperties": true,
+          "description": "App-specific extension data. MUST be preserved on round-trip import/export."
         }
       }
     }
