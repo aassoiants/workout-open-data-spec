@@ -291,7 +291,7 @@ Regardless of your conformance level: if you import a file with fields you don't
 
 ## Extensions (`_extra`)
 
-Every object in WODIS — metadata, session, exercise, set — has an `_extra` field. This is the escape hatch for app-specific data that doesn't belong in the core schema.
+Every object in WODIS — metadata, session, exercise, set, rep — has an `_extra` field. This is the escape hatch for app-specific data that doesn't belong in the core schema.
 
 ### Three rules
 
