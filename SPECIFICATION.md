@@ -19,6 +19,7 @@
   - [4.4 Round-Trip Preservation](#44-round-trip-preservation)
 - [5. Versioning](#5-versioning)
 - [6. Units and Formats](#6-units-and-formats)
+- [7. Ground Truth vs Derived Data](#7-ground-truth-vs-derived-data)
 
 ---
 
@@ -270,3 +271,81 @@ This rule applies to:
 | **Field names** | All field names defined by this specification MUST be `snake_case`. Extension fields within `_extra` SHOULD follow `snake_case` but this is not enforced. |
 | **Encoding** | WODIS documents MUST be encoded as UTF-8. |
 | **MIME type** | The RECOMMENDED media type for WODIS documents is `application/json`. The RECOMMENDED file extension is `.wodis.json`. |
+
+---
+
+## 7. Ground Truth vs Derived Data
+
+A WODIS file stores **ground truth**: observations that disappear if not captured at the moment of effort. Applications calculate **derived insights** from that ground truth. These two categories MUST NOT be confused.
+
+Ground truth goes in the file. Derived insights are the app's job.
+
+### 7.1 Common Traps
+
+Three cases where applications try to derive ground truth instead of recording it:
+
+**1. Calculating rest from timestamps loses intent.**
+Timestamps at 10:30:00 and 10:32:30 give you "150 seconds rest." But was that intentional rest, or 90 seconds of chatting? The rest the lifter chose to take is ground truth. Record it in `rest_seconds_actual`. Timestamp math is a backup, not a replacement.
+
+**2. Detecting supersets from short rest is unreliable.**
+15 seconds between a bench set and a row set looks like a superset. But maybe the lifter just moves fast between straight sets. Superset relationships are intentional structure. Record them with `superset_id` and `superset_sequence`. Don't infer intent from timing.
+
+**3. Calculating RPE from velocity misses subjective experience.**
+Velocity-based training can estimate effort from bar speed, but RPE is how hard the set *felt*. A lifter who slept 4 hours will rate RPE 8 on a set that would be a 6 on a good day, same velocity. Velocity is data (put it in `_extra`). RPE is perception (put it in `rpe`). They complement each other. One doesn't replace the other.
+
+### 7.2 Example: Pre-Fatigue Analysis
+
+You log a pull day. Lat pulldown performance dropped: fewer reps, higher RPE, earlier failure than last week. Why? Here's what the file captured:
+
+```json
+{
+  "wodis_version": "1.0.0",
+  "meta": { "source": "pullday-tracker" },
+  "session": {
+    "started_at": "2026-02-26T07:00:00Z",
+    "load_unit": "kg",
+    "exercises": [
+      {
+        "display_name": "Barbell Row",
+        "started_at": "2026-02-26T07:02:00Z",
+        "muscle_groups": ["lats", "rhomboids", "biceps"],
+        "sets": [
+          { "reps_completed": 10, "load": 80, "rpe": 7 },
+          { "reps_completed": 10, "load": 80, "rpe": 8 },
+          { "reps_completed": 8, "load": 80, "rpe": 9 }
+        ]
+      },
+      {
+        "display_name": "Chin-Up",
+        "started_at": "2026-02-26T07:18:00Z",
+        "muscle_groups": ["lats", "biceps"],
+        "sets": [
+          { "reps_completed": 8, "load": 0, "rpe": 8 },
+          { "reps_completed": 7, "load": 0, "rpe": 9 },
+          { "reps_completed": 5, "load": 0, "rpe": 10, "is_failure": true }
+        ]
+      },
+      {
+        "display_name": "Lat Pulldown",
+        "started_at": "2026-02-26T07:35:00Z",
+        "muscle_groups": ["lats", "biceps"],
+        "sets": [
+          { "reps_completed": 8, "load": 60, "rpe": 8 },
+          { "reps_completed": 6, "load": 60, "rpe": 9 },
+          { "reps_completed": 5, "load": 60, "rpe": 10, "is_failure": true }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The file doesn't say *why*. But it gives the app everything it needs to figure it out:
+
+- **Three exercises sharing "lats"** - rows, chin-ups, and pulldowns all hit the same muscle.
+- **Escalating RPE** - started at RPE 7 on rows, hit RPE 10 failure on chin-ups, already at RPE 8 on the *first* set of pulldowns.
+- **Pre-fatigue** - by the time pulldowns started, the lats had done 6 hard sets across two exercises.
+
+The app can show: "Your lats had 6 sets of work before pulldowns. Last week you did pulldowns second, not third." That's a derived insight. The file stored the facts: timestamps, exercise order, muscle groups, RPE per set.
+
+If the file had only stored "lat pulldown: 3 sets" without timestamps, order, or muscle groups, the app could never reconstruct this. You can always derive less, but you can't derive what was never recorded.

@@ -1,11 +1,10 @@
 # WODIS - Workout Open Data Interchange Specification
 
-> Your workout data should outlive your gym membership.
+> Your workout data should outlive your app and gym membership.
 
 ## Table of Contents
 
 - [What is WODIS?](#what-is-wodis)
-- [Jobs It Solves](#jobs-it-solves)
 - [Quick Example](#quick-example)
 - [The Data Hierarchy](#the-data-hierarchy)
 - [Philosophy](#philosophy)
@@ -21,22 +20,15 @@
 
 ## What is WODIS?
 
-WODIS is a JSON-based open specification for storing and exchanging strength training data between apps. A common format so your workout history isn't trapped in one app forever.
+WODIS is a shared format for workout data so you can move your training history between apps without losing anything. Switch apps? Keep your logs.
 
-Ever exported a workout log and gotten a lossy CSV that flattened your supersets into meaningless rows? WODIS fixes that.
+It's also a push for training apps to stop treating your data as a retention strategy. When your logs are portable, apps earn you by being better, not by making it painful to leave.
 
-Formal field reference: [SPECIFICATION.md](SPECIFICATION.md). Schema: [wodis.schema.json](wodis.schema.json).
+WODIS is a JSON-based open specification. Ever exported a workout log and gotten a lossy CSV that flattened your supersets into meaningless rows? WODIS fixes that. It keeps your dropsets, supersets, per-rep data, and RPE intact. Not flattened. Not lossy.
 
-## Jobs It Solves
+It's a JSON file. Your data lives on your machine, not locked in someone's cloud. Open it in a text editor and read it. Analyze it with Python, Excel, whatever. Any tool that reads JSON reads WODIS.
 
-| What you say | What WODIS does |
-|---|---|
-| "I want to switch apps without starting from scratch" | Move your workout history between apps with zero data loss |
-| "I want my data on my machine, not locked in someone's cloud" | Own your training data in a plain JSON file you control |
-| "I want to know why today felt harder than last week" | Timestamps, RPE, exercise order, and rest times are all in the file |
-| "I want to use Python/Excel/whatever on my own data" | It's JSON. Any tool can read it |
-| "My dropsets and supersets should look like dropsets and supersets, not flattened rows" | The structure stays intact |
-| "I just want a schema to start from" | Validate against the schema and ship |
+Full field reference: [SPECIFICATION.md](SPECIFICATION.md) | Schema: [wodis.schema.json](wodis.schema.json)
 
 ## Quick Example
 
@@ -79,11 +71,11 @@ Metadata        spec version, source app, athlete
                  └─ Rep      the atom: one repetition with its own load and flags
 ```
 
-- **Rep** - The smallest unit. Each rep can have its own `load`, `assisted`, and `partial` flags. Most apps won't need per-rep detail, but when you do a dropset or get a spot on rep 9, this is where it lives.
-- **Set** - Reps done without meaningful rest. If you rested, it's a new set. If you dropped the weight and kept going, same set. Carries load, reps, RPE, set type, and optional per-rep breakdown.
-- **Exercise** - A named movement with a timestamp and an array of sets. `started_at` lets apps derive exercise order without a fragile sequence number.
-- **Session** - The workout. Start time, optional end time, location, and exercises.
-- **Metadata** - The envelope. Schema version, which app created the file, optional athlete identifier.
+- **Rep** - One repetition. Most apps don't need this level of detail, but when you do a dropset or get a spot on rep 9, this is where it lives. Each rep can track its own load, and whether it was assisted or partial.
+- **Set** - A group of reps done without meaningful rest. If you rested, it's a new set. If you dropped the weight and kept going, same set.
+- **Exercise** - A movement and its sets. "Bench Press: 3 sets." The timestamp on each exercise gives you the order you did them in.
+- **Session** - One workout. When you started, when you finished, what you did.
+- **Metadata** - The label on the file. Which app made it, which version of the spec, who the athlete is.
 
 ## Philosophy
 
@@ -133,7 +125,9 @@ GPX has been the universal standard for GPS tracks for 20+ years. Its `<extensio
 
 ### Why no exercise database
 
-No canonical list of exercise names is baked into the spec. The most comprehensive open exercise database (wger's) is CC BY-SA. Bundling it would force copyleft obligations onto every app using WODIS. Beyond licensing, there's no consensus on naming ("Squat" vs "Back Squat" vs "Barbell Back Squat") and infinite variation disputes (is close-grip bench a separate exercise or a variation?). WODIS standardizes workout *structure*, not exercise semantics. Apps bring their own exercise lists. The spec provides `canonical_ids` hooks for cross-referencing.
+WODIS doesn't ship an exercise list. There's no canonical "Squat" vs "Back Squat" vs "Barbell Back Squat." Nobody agrees, and the best open database (wger) is copyleft, which would force licensing obligations onto every app.
+
+WODIS standardizes workout *structure*, not exercise names. Apps bring their own lists. The spec provides `canonical_ids` hooks for cross-referencing when they need to.
 
 ### Philosophy summary
 
@@ -147,99 +141,17 @@ No canonical list of exercise names is baked into the spec. The most comprehensi
 
 ## What You Record vs What You Learn
 
-The file stores **ground truth**: things that disappear if you don't capture them in the moment. The app calculates **derived insights** from that ground truth. These two categories MUST NOT be confused.
+WODIS draws a hard line between two things: what happened and what it means.
 
-### Ground truth (goes in the file)
+The file stores **ground truth** - things that disappear if you don't capture them in the moment. The app you use with WODIS data calculates **derived insights** from that ground truth.
 
-- Timestamps (when each exercise and set happened)
-- Load (how much weight, per set or per rep)
-- Reps completed
-- RPE / RIR (how hard it felt, recorded at the moment of effort)
-- Superset relationships (which exercises were paired)
-- Rest periods (actual measured time, not planned)
-- Failure and form observations
-- Assisted / partial rep flags
+**Ground truth (goes in the file):** timestamps, load, reps, RPE/RIR, superset relationships, rest periods, failure flags, assisted/partial rep flags.
 
-### Derived insights (the app's job)
+**Derived insights (the app's job):** personal records, volume metrics, estimated 1RM, fatigue trends, progressive overload, muscle-group workload.
 
-- Personal records (1RM, volume PRs)
-- Volume metrics (tonnage, sets per muscle group)
-- Estimated 1RM (Epley, Brzycki)
-- Fatigue and freshness context
-- Progressive overload trends
-- Muscle-group workload distribution
+The file is the source of truth. The app is the analyst. You can always derive less, but you can't derive what was never recorded.
 
-The file is the source of truth. The app is the analyst.
-
-### The Danger Zone
-
-Three common traps where apps try to derive ground truth instead of recording it:
-
-**1. Calculating rest from timestamps loses intent.**
-Timestamps at 10:30:00 and 10:32:30 give you "150 seconds rest." But was that intentional rest, or 90 seconds of chatting? The rest the lifter chose to take is ground truth. Record it in `rest_seconds_actual`. Timestamp math is a backup, not a replacement.
-
-**2. Detecting supersets from short rest is unreliable.**
-15 seconds between a bench set and a row set looks like a superset. But maybe the lifter just moves fast between straight sets. Superset relationships are intentional structure. Record them with `superset_id` and `superset_sequence`. Don't infer intent from timing.
-
-**3. Calculating RPE from velocity misses subjective experience.**
-Velocity-based training can estimate effort from bar speed, but RPE is how hard the set *felt*. A lifter who slept 4 hours will rate RPE 8 on a set that would be a 6 on a good day, same velocity. Velocity is data (put it in `_extra`). RPE is perception (put it in `rpe`). They complement each other. One doesn't replace the other.
-
-### Example: why did your lat pulldown drop off?
-
-You log a pull day. Lat pulldown performance dropped: fewer reps, higher RPE, earlier failure than last week. Why? Here's what the file captured:
-
-```json
-{
-  "wodis_version": "1.0.0",
-  "meta": { "source": "pullday-tracker" },
-  "session": {
-    "started_at": "2026-02-26T07:00:00Z",
-    "load_unit": "kg",
-    "exercises": [
-      {
-        "display_name": "Barbell Row",
-        "started_at": "2026-02-26T07:02:00Z",
-        "muscle_groups": ["lats", "rhomboids", "biceps"],
-        "sets": [
-          { "reps_completed": 10, "load": 80, "rpe": 7 },
-          { "reps_completed": 10, "load": 80, "rpe": 8 },
-          { "reps_completed": 8, "load": 80, "rpe": 9 }
-        ]
-      },
-      {
-        "display_name": "Chin-Up",
-        "started_at": "2026-02-26T07:18:00Z",
-        "muscle_groups": ["lats", "biceps"],
-        "sets": [
-          { "reps_completed": 8, "load": 0, "rpe": 8 },
-          { "reps_completed": 7, "load": 0, "rpe": 9 },
-          { "reps_completed": 5, "load": 0, "rpe": 10, "is_failure": true }
-        ]
-      },
-      {
-        "display_name": "Lat Pulldown",
-        "started_at": "2026-02-26T07:35:00Z",
-        "muscle_groups": ["lats", "biceps"],
-        "sets": [
-          { "reps_completed": 8, "load": 60, "rpe": 8 },
-          { "reps_completed": 6, "load": 60, "rpe": 9 },
-          { "reps_completed": 5, "load": 60, "rpe": 10, "is_failure": true }
-        ]
-      }
-    ]
-  }
-}
-```
-
-The file doesn't say *why*. But it gives the app everything it needs to figure it out:
-
-- **Three exercises sharing "lats"** - rows, chin-ups, and pulldowns all hit the same muscle.
-- **Escalating RPE** - started at RPE 7 on rows, hit RPE 10 failure on chin-ups, already at RPE 8 on the *first* set of pulldowns.
-- **Pre-fatigue** - by the time pulldowns started, the lats had done 6 hard sets across two exercises.
-
-The app can show: "Your lats had 6 sets of work before pulldowns. Last week you did pulldowns second, not third." That's a derived insight. The file stored the facts: timestamps, exercise order, muscle groups, RPE per set.
-
-If the file had only stored "lat pulldown: 3 sets" without timestamps, order, or muscle groups, the app could never reconstruct this. You can always derive less, but you can't derive what was never recorded.
+For a deeper look at common mistakes (inferring rest from timestamps, detecting supersets from timing, confusing velocity with RPE) and a worked example, see [Section 7 of the specification](SPECIFICATION.md#7-ground-truth-vs-derived-data).
 
 ## Conformance Levels
 
@@ -307,9 +219,9 @@ Every object in WODIS (metadata, session, exercise, set, rep) has an `_extra` fi
 2. **Namespace by app.** Use `"_extra": { "myapp": { ... } }` to avoid collisions between different apps writing to the same `_extra` object.
 3. **No validation.** The spec does not validate `_extra` contents. It's an open object. Validation is the responsibility of the app that wrote it.
 
-### Common patterns
+### Example
 
-**Velocity data** (per-rep, in `_extra` on the set or rep):
+Velocity tracking on a set:
 
 ```json
 {
@@ -324,74 +236,7 @@ Every object in WODIS (metadata, session, exercise, set, rep) has an `_extra` fi
 }
 ```
 
-**Tempo prescription** (on the set):
-
-```json
-{
-  "reps_completed": 8,
-  "load": 60,
-  "_extra": {
-    "tempoapp": {
-      "tempo": "3-1-2-0",
-      "tempo_parts": {
-        "eccentric_seconds": 3,
-        "pause_bottom_seconds": 1,
-        "concentric_seconds": 2,
-        "pause_top_seconds": 0
-      }
-    }
-  }
-}
-```
-
-**Equipment configuration** (on the exercise):
-
-```json
-{
-  "display_name": "Cable Fly",
-  "started_at": "2026-02-26T08:00:00Z",
-  "_extra": {
-    "cableapp": {
-      "machine": "functional_trainer",
-      "pulley_height": "high",
-      "handle_type": "D-handle",
-      "cable_position": "both"
-    }
-  }
-}
-```
-
-**Recovery and readiness** (on the session):
-
-```json
-{
-  "started_at": "2026-02-26T07:00:00Z",
-  "_extra": {
-    "recoveryapp": {
-      "hrv_rmssd_ms": 62,
-      "sleep_hours": 7.5,
-      "readiness_score": 78,
-      "soreness_rating": 3
-    }
-  }
-}
-```
-
-**Media attachments** (on the set):
-
-```json
-{
-  "reps_completed": 3,
-  "load": 140,
-  "_extra": {
-    "formcheck": {
-      "video_url": "https://example.com/clips/deadlift-pr.mp4",
-      "thumbnail_url": "https://example.com/clips/deadlift-pr-thumb.jpg",
-      "recorded_at": "2026-02-26T08:15:00Z"
-    }
-  }
-}
-```
+The same pattern works for tempo prescriptions, equipment configuration, recovery/readiness metrics, media attachments, or anything else your app tracks. Namespace it, and it rides along without touching the core schema.
 
 ## For App Developers
 
@@ -436,7 +281,7 @@ function importFromWODIS(json):
 
 **If you don't recognize a field, keep it anyway.** `_extra` exists on every level (set, exercise, session, metadata, rep). Namespace your extensions (e.g., `"_extra": { "myapp": { ... } }`) and never delete someone else's.
 
-## What Else Exists
+## What Other Ideas Already Exist
 
 - **[OpenWeight](https://openweight.dev)** - Closest prior art. Covers sets, RPE, supersets, tempo. Apache 2.0. WODIS adds per-rep atomicity and the record-vs-learn separation.
 - **wger** - Open-source workout manager with a good data model, but it's an app API, not a portable interchange spec.
@@ -450,7 +295,7 @@ Open a GitHub issue first to discuss the change. Once there's agreement, submit 
 - If changing the schema: update the schema file, examples, and SPECIFICATION.md.
 - If adding a new field: include a rationale for why it can't live in `_extra`.
 
-Be respectful. Have fun. And focus on helping better solve the user jobs that this product seeks to address.
+Be respectful. Have fun.
 
 ### Versioning
 

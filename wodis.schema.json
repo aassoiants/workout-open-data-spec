@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://wodis.dev/schema/v1.0.0/wodis.schema.json",
+  "$id": "https://raw.githubusercontent.com/aassoiants/workout-open-data-spec/main/wodis.schema.json",
   "title": "Workout Open Data Interchange Specification (WODIS)",
   "description": "A portable, human-readable, machine-parseable format for logging resistance-training sessions. This schema defines the structure of a single workout session including exercises, sets, and optional per-rep data.",
   "type": "object",
