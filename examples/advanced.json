@@ -55,7 +55,7 @@
             "superset_sequence": 1,
             "_extra": {
               "vitruve": {
-                "mean_concentric_velocity_ms": [0.45, 0.42, 0.38, 0.35, 0.32]
+                "mean_concentric_velocity_ms": [0.45, 0.42, 0.40, 0.38, 0.35, 0.33, 0.31, 0.29]
               }
             }
           },

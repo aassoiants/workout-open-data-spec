@@ -13,9 +13,9 @@
   - [2.5 Rep](#25-rep)
 - [3. The _extra Object](#3-the-_extra-object)
 - [4. Conformance Levels](#4-conformance-levels)
-  - [4.1 Level 1 — Minimal](#41-level-1--minimal)
-  - [4.2 Level 2 — Standard](#42-level-2--standard)
-  - [4.3 Level 3 — Rich](#43-level-3--rich)
+  - [4.1 Level 1 — Minimal](#41-level-1-minimal)
+  - [4.2 Level 2 — Standard](#42-level-2-standard)
+  - [4.3 Level 3 — Rich](#43-level-3-rich)
   - [4.4 Round-Trip Preservation](#44-round-trip-preservation)
 - [5. Versioning](#5-versioning)
 - [6. Units and Formats](#6-units-and-formats)
@@ -144,6 +144,7 @@ A `rep` object is the atomic unit of WODIS. It represents a single repetition an
 | `assisted` | boolean | MAY | `true` if this rep was performed with external assistance (e.g., spotter help, machine counterbalance). Defaults to `false` when absent. |
 | `partial` | boolean | MAY | `true` if this rep used an incomplete range of motion (intentional or due to fatigue). Defaults to `false` when absent. |
 | `completed` | boolean | MAY | `true` if the rep was successfully finished through the intended range of motion. `false` indicates a failed rep attempt. Defaults to `true` when absent. |
+| `_extra` | object | MAY | App-specific rep data. See [Section 3](#3-the-_extra-object). |
 
 Additional properties MAY be present on the `rep` object and MUST be preserved on round-trip.
 
@@ -155,7 +156,7 @@ The `_extra` property is the extension mechanism for WODIS, following the same d
 
 ### Rules
 
-1. **Availability.** Every object in a WODIS document — `meta`, `session`, `exercise`, `set` — MUST support an `_extra` property. Implementations MUST NOT reject a document because `_extra` is present at any level.
+1. **Availability.** Every object in a WODIS document — `meta`, `session`, `exercise`, `set`, `rep` — MUST support an `_extra` property. Implementations MUST NOT reject a document because `_extra` is present at any level.
 
 2. **Round-trip preservation.** Implementations that import and re-export WODIS documents MUST preserve all `_extra` data, including data they do not recognize. An application that reads a field it does not understand MUST write it back unchanged.
 

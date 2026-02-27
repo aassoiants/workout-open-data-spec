@@ -2,7 +2,7 @@
 
 > Your workout data should outlive your gym membership.
 
-The key words MUST, MUST NOT, SHOULD, and MAY in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
+This document uses the keywords MUST, SHOULD, and MAY as defined in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119). For the full normative specification, see [SPECIFICATION.md](SPECIFICATION.md).
 
 ## Table of Contents
 
@@ -23,6 +23,8 @@ The key words MUST, MUST NOT, SHOULD, and MAY in this document are to be interpr
 ## What is WODIS?
 
 WODIS is a JSON-based open specification for storing and exchanging strength training data between apps. Think of it as the GPX of strength training: a common format so your workout history isn't trapped in one app forever. If you've ever exported a workout log and gotten a lossy CSV that flattened your supersets into meaningless rows, WODIS is the fix.
+
+For the formal field-by-field reference, see [SPECIFICATION.md](SPECIFICATION.md). Validate your files against [wodis.schema.json](wodis.schema.json).
 
 ## Jobs It Solves
 
