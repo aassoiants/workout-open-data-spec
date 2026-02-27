@@ -15,7 +15,8 @@ This document uses the keywords MUST, SHOULD, and MAY as defined in [RFC 2119](h
 - [Conformance Levels](#conformance-levels)
 - [Extensions (`_extra`)](#extensions-_extra)
 - [For App Developers](#for-app-developers)
-- [Prior Art](#prior-art)
+- [What Else Exists](#what-else-exists)
+- [Contributing](#contributing)
 - [License](#license)
 
 ---
@@ -432,12 +433,36 @@ function importFromWODIS(json):
 
 **If you don't recognize a field, keep it anyway.** `_extra` exists on every level (set, exercise, session, metadata, rep). Namespace your extensions (e.g., `"_extra": { "myapp": { ... } }`) and never delete someone else's.
 
-## Prior Art
+## What Else Exists
 
 - **[OpenWeight](https://openweight.dev)** - Closest prior art. Covers sets, RPE, supersets, tempo. Apache 2.0. WODIS adds per-rep atomicity and the record-vs-learn separation.
 - **wger** - Open-source workout manager with a good data model, but it's an app API, not a portable interchange spec.
 - **Garmin FIT** - Proprietary binary. Strong on cardio, limited for strength training.
 - **GPX** - The inspiration. Simple, extensible, human-readable. The universal standard for GPS tracks.
+
+## Contributing
+
+Open a GitHub issue first to discuss the change. Once there's agreement, submit a pull request.
+
+- If changing the schema: update the schema file, examples, and SPECIFICATION.md.
+- If adding a new field: include a rationale for why it can't live in `_extra`.
+
+### Versioning
+
+WODIS follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
+
+- **Patch** (1.0.x) - Typo fixes, clarifications. No schema changes.
+- **Minor** (1.x.0) - New optional fields. Backward compatible.
+- **Major** (x.0.0) - Breaking changes: removed fields, changed types, new required fields.
+
+### Style
+
+- JSON field names in `snake_case`
+- Timestamps in ISO 8601
+- Weight in kilograms
+- Durations in seconds
+
+Be respectful. Have fun. And focus on helping better solve the user jobs that this product seeks to address.
 
 ## License
 
