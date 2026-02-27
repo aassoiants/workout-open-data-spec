@@ -210,7 +210,7 @@
           "type": "number",
           "minimum": 0,
           "maximum": 5,
-          "description": "Reps In Reserve — estimated number of additional reps that could have been performed."
+          "description": "Reps In Reserve: estimated number of additional reps that could have been performed."
         },
         "rest_seconds_actual": {
           "title": "Rest Seconds (Actual)",

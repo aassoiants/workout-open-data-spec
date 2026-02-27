@@ -13,9 +13,9 @@
   - [2.5 Rep](#25-rep)
 - [3. The _extra Object](#3-the-_extra-object)
 - [4. Conformance Levels](#4-conformance-levels)
-  - [4.1 Level 1 — Minimal](#41-level-1-minimal)
-  - [4.2 Level 2 — Standard](#42-level-2-standard)
-  - [4.3 Level 3 — Rich](#43-level-3-rich)
+  - [4.1 Level 1 - Minimal](#41-level-1---minimal)
+  - [4.2 Level 2 - Standard](#42-level-2---standard)
+  - [4.3 Level 3 - Rich](#43-level-3---rich)
   - [4.4 Round-Trip Preservation](#44-round-trip-preservation)
 - [5. Versioning](#5-versioning)
 - [6. Units and Formats](#6-units-and-formats)
@@ -121,7 +121,7 @@ A `set` object represents a group of repetitions performed without meaningful re
 | `reps` | array | MAY | Per-rep atomic data. When present, each element MUST be a Rep object as defined in [Section 2.5](#25-rep). Each element represents one repetition in the order performed. The length of this array SHOULD equal `reps_completed`, but implementations MUST NOT reject documents where they differ. |
 | `set_type` | string | SHOULD (Level 2+) | Classification of this set's purpose. When present, the value MUST be one of: `"working"`, `"warmup"`, `"dropset"`, `"failure"`, `"backoff"`, `"amrap"`. |
 | `rpe` | number | MAY | Rate of Perceived Exertion on the Borg CR-10 scale. When present, the value MUST be in the range 1 to 10, inclusive. This is a subjective measure recorded at the moment of effort. |
-| `rir` | number | MAY | Reps In Reserve — the lifter's estimate of how many additional reps could have been performed. When present, the value MUST be in the range 0 to 5, inclusive. |
+| `rir` | number | MAY | Reps In Reserve: the lifter's estimate of how many additional reps could have been performed. When present, the value MUST be in the range 0 to 5, inclusive. |
 | `rest_seconds_actual` | number | SHOULD (Level 2+) | Actual time in seconds the lifter rested before beginning this set. This is ground truth (the rest that was actually taken), not a derived value from timestamp math. MUST be greater than or equal to 0 when present. |
 | `is_failure` | boolean | MAY | `true` if the set was taken to muscular failure (the lifter could not complete another rep with acceptable form). |
 | `form_flags` | array of strings | MAY | Observed technique deviations during the set (e.g., `["hip_shift", "shortened_rom", "excessive_lean"]`). No controlled vocabulary is defined. |
@@ -136,7 +136,7 @@ Additional properties MAY be present on the `set` object and MUST be preserved o
 
 ### 2.5 Rep
 
-A `rep` object is the atomic unit of WODIS. It represents a single repetition and captures data that can vary from one rep to the next within the same set — most commonly load changes (dropsets) and assistance (spotter on final reps).
+A `rep` object is the atomic unit of WODIS. It represents a single repetition and captures data that can vary from one rep to the next within the same set, most commonly load changes (dropsets) and assistance (spotter on final reps).
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -156,7 +156,7 @@ The `_extra` property is the extension mechanism for WODIS, following the same d
 
 ### Rules
 
-1. **Availability.** Every object in a WODIS document — `meta`, `session`, `exercise`, `set`, `rep` — MUST support an `_extra` property. Implementations MUST NOT reject a document because `_extra` is present at any level.
+1. **Availability.** Every object in a WODIS document (`meta`, `session`, `exercise`, `set`, `rep`) MUST support an `_extra` property. Implementations MUST NOT reject a document because `_extra` is present at any level.
 
 2. **Round-trip preservation.** Implementations that import and re-export WODIS documents MUST preserve all `_extra` data, including data they do not recognize. An application that reads a field it does not understand MUST write it back unchanged.
 
@@ -179,7 +179,7 @@ The `_extra` property is the extension mechanism for WODIS, following the same d
 
 WODIS defines three conformance levels. Each level is a superset of the previous one. Applications SHOULD declare which level they target, and consumers SHOULD accept documents at any level.
 
-### 4.1 Level 1 — Minimal
+### 4.1 Level 1 - Minimal
 
 A Level 1 document contains the bare essentials: enough to reconstruct what exercises were performed, when, with how much weight, and for how many reps.
 
@@ -197,9 +197,9 @@ A conforming Level 1 document MUST include all of the following fields:
 
 Any additional fields MAY be present. Level 1 documents are what a simple logging application exports.
 
-### 4.2 Level 2 — Standard
+### 4.2 Level 2 - Standard
 
-A Level 2 document adds the fields needed to analyze training quality — not just volume, but intensity, effort, structure, and recovery context.
+A Level 2 document adds the fields needed to analyze training quality: intensity, effort, structure, and recovery context.
 
 A conforming Level 2 document MUST include all Level 1 fields and SHOULD include all of the following:
 
@@ -217,9 +217,9 @@ A conforming Level 2 document MUST include all Level 1 fields and SHOULD include
 
 An application targeting Level 2 conformance SHOULD populate these fields whenever the data is available. Fields MAY be omitted when the data is not applicable (e.g., `superset_id` when no superset was performed).
 
-### 4.3 Level 3 — Rich
+### 4.3 Level 3 - Rich
 
-A Level 3 document provides full per-rep atomic data and leverages `_extra` for app-specific extensions such as velocity tracking, tempo prescriptions, equipment configuration, and media attachments.
+A Level 3 document provides full per-rep atomic data and uses `_extra` for app-specific extensions: velocity tracking, tempo prescriptions, equipment configuration, and media attachments.
 
 A conforming Level 3 document MUST include all Level 1 fields, SHOULD include all Level 2 fields, and additionally:
 
@@ -228,7 +228,7 @@ A conforming Level 3 document MUST include all Level 1 fields, SHOULD include al
 | `reps` | set | Per-rep atomic array. Each element is a Rep object with its own `load_kg` and OPTIONAL `assisted`, `partial`, and `completed` flags. |
 | `_extra` | any level | App-specific extension data (velocity, tempo, equipment config, recovery metrics, media). |
 
-Level 3 is where `_extra` earns its keep. Per-rep velocity, eccentric tempo, cable height, bar type, video attachments — all of it lives in `_extra` at the appropriate level.
+Per-rep velocity, eccentric tempo, cable height, bar type, video attachments: all live in `_extra` at the appropriate level.
 
 ### 4.4 Round-Trip Preservation
 
