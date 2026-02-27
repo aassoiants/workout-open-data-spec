@@ -44,6 +44,7 @@ A minimal valid WODIS document:
   },
   "session": {
     "started_at": "2026-02-26T07:30:00Z",
+    "load_unit": "kg",
     "exercises": [
       {
         "display_name": "Squat",
@@ -51,7 +52,7 @@ A minimal valid WODIS document:
         "sets": [
           {
             "reps_completed": 5,
-            "load_kg": 100
+            "load": 100
           }
         ]
       }
@@ -84,6 +85,7 @@ The `session` object represents a single workout. It is anchored by a start time
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `started_at` | string | MUST | ISO 8601 date-time when the session began. Every WODIS document MUST include this field. |
+| `load_unit` | string | MUST | Unit for all `load` values in this document. MUST be one of: `"kg"` or `"lbs"`. All `load` fields at set and rep level are interpreted in this unit. |
 | `ended_at` | string | MAY | ISO 8601 date-time when the session ended. |
 | `location` | string | MAY | Name or description of the gym or location where the session took place. |
 | `split_type` | string | MAY | Training split label for this session (e.g., `"upper_lower"`, `"push_pull_legs"`, `"full_body"`). No controlled vocabulary is defined; apps MAY use any string value. |
@@ -117,7 +119,7 @@ A `set` object represents a group of repetitions performed without meaningful re
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `reps_completed` | integer | MUST | Total number of repetitions completed in this set. MUST be an integer greater than or equal to 0. A value of `0` indicates a failed attempt where no reps were completed (e.g., an unsuccessful 1RM attempt). |
-| `load_kg` | number | MUST | Weight in kilograms used for this set. A value of `0` indicates bodyweight with no external load. A negative value indicates assisted weight (e.g., `-15` means 15 kg of machine assistance on a pull-up). When the `reps` array is present with per-rep loads, this field SHOULD reflect the primary or starting load of the set. |
+| `load` | number | MUST | Weight used for this set, in the unit declared by `session.load_unit`. A value of `0` indicates bodyweight with no external load. A negative value indicates assisted weight (e.g., `-15` means 15 units of machine assistance on a pull-up). When the `reps` array is present with per-rep loads, this field SHOULD reflect the primary or starting load of the set. |
 | `reps` | array | MAY | Per-rep atomic data. When present, each element MUST be a Rep object as defined in [Section 2.5](#25-rep). Each element represents one repetition in the order performed. The length of this array SHOULD equal `reps_completed`, but implementations MUST NOT reject documents where they differ. |
 | `set_type` | string | SHOULD (Level 2+) | Classification of this set's purpose. When present, the value MUST be one of: `"working"`, `"warmup"`, `"dropset"`, `"failure"`, `"backoff"`, `"amrap"`. |
 | `rpe` | number | MAY | Rate of Perceived Exertion on the Borg CR-10 scale. When present, the value MUST be in the range 1 to 10, inclusive. This is a subjective measure recorded at the moment of effort. |
@@ -140,7 +142,7 @@ A `rep` object is the atomic unit of WODIS. It represents a single repetition an
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `load_kg` | number | MUST | Weight in kilograms for this specific repetition. This allows load to vary within a set (e.g., a dropset where weight decreases mid-set). Follows the same conventions as the set-level `load_kg`: `0` for bodyweight, negative for assisted. |
+| `load` | number | MUST | Weight for this specific repetition, in the unit declared by `session.load_unit`. This allows load to vary within a set (e.g., a dropset where weight decreases mid-set). Follows the same conventions as the set-level `load`: `0` for bodyweight, negative for assisted. |
 | `assisted` | boolean | MAY | `true` if this rep was performed with external assistance (e.g., spotter help, machine counterbalance). Defaults to `false` when absent. |
 | `partial` | boolean | MAY | `true` if this rep used an incomplete range of motion (intentional or due to fatigue). Defaults to `false` when absent. |
 | `completed` | boolean | MAY | `true` if the rep was successfully finished through the intended range of motion. `false` indicates a failed rep attempt. Defaults to `true` when absent. |
@@ -190,10 +192,11 @@ A conforming Level 1 document MUST include all of the following fields:
 | 1 | `wodis_version` | root |
 | 2 | `meta.source` | meta |
 | 3 | `session.started_at` | session |
-| 4 | `exercise.display_name` | exercise |
-| 5 | `exercise.started_at` | exercise |
-| 6 | `set.reps_completed` | set |
-| 7 | `set.load_kg` | set |
+| 4 | `session.load_unit` | session |
+| 5 | `exercise.display_name` | exercise |
+| 6 | `exercise.started_at` | exercise |
+| 7 | `set.reps_completed` | set |
+| 8 | `set.load` | set |
 
 Any additional fields MAY be present. Level 1 documents are what a simple logging application exports.
 
@@ -225,7 +228,7 @@ A conforming Level 3 document MUST include all Level 1 fields, SHOULD include al
 
 | Field | Location | Purpose |
 |-------|----------|---------|
-| `reps` | set | Per-rep atomic array. Each element is a Rep object with its own `load_kg` and OPTIONAL `assisted`, `partial`, and `completed` flags. |
+| `reps` | set | Per-rep atomic array. Each element is a Rep object with its own `load` and OPTIONAL `assisted`, `partial`, and `completed` flags. |
 | `_extra` | any level | App-specific extension data (velocity, tempo, equipment config, recovery metrics, media). |
 
 Per-rep velocity, eccentric tempo, cable height, bar type, video attachments: all live in `_extra` at the appropriate level.
@@ -261,7 +264,7 @@ This rule applies to:
 
 | Category | Rule |
 |----------|------|
-| **Weight** | All weight values (`load_kg` at set and rep level) MUST be in kilograms. Applications that display pounds MUST convert to kilograms for storage and interchange. |
+| **Weight** | All weight values (`load` at set and rep level) are in the unit declared by `session.load_unit` (`"kg"` or `"lbs"`). All `load` values within a single document MUST use the same unit. |
 | **Timestamps** | All timestamp fields (`started_at`, `ended_at`, `timestamp`) MUST be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time format (e.g., `"2026-02-26T07:30:00Z"`). Timezone offset or UTC (`Z`) SHOULD be included. |
 | **Durations** | All duration fields (`rest_seconds_actual`, `transition_time_seconds`) MUST be in seconds. Values MUST be numbers (integer or floating-point) and MUST be greater than or equal to 0. |
 | **Field names** | All field names defined by this specification MUST be `snake_case`. Extension fields within `_extra` SHOULD follow `snake_case` but this is not enforced. |

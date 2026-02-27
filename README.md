@@ -2,8 +2,6 @@
 
 > Your workout data should outlive your gym membership.
 
-This document uses the keywords MUST, SHOULD, and MAY as defined in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119). For the full normative specification, see [SPECIFICATION.md](SPECIFICATION.md).
-
 ## Table of Contents
 
 - [What is WODIS?](#what-is-wodis)
@@ -52,6 +50,7 @@ A minimal Level 1 file. One exercise, one set, only required fields:
   },
   "session": {
     "started_at": "2026-02-26T07:30:00Z",
+    "load_unit": "kg",
     "exercises": [
       {
         "display_name": "Bench Press",
@@ -59,7 +58,7 @@ A minimal Level 1 file. One exercise, one set, only required fields:
         "sets": [
           {
             "reps_completed": 8,
-            "load_kg": 80
+            "load": 80
           }
         ]
       }
@@ -80,13 +79,15 @@ Metadata        spec version, source app, athlete
                  └─ Rep      the atom: one repetition with its own load and flags
 ```
 
-- **Rep** - The smallest unit. Each rep can have its own `load_kg`, `assisted`, and `partial` flags. Most apps won't need per-rep detail, but when you do a dropset or get a spot on rep 9, this is where it lives.
+- **Rep** - The smallest unit. Each rep can have its own `load`, `assisted`, and `partial` flags. Most apps won't need per-rep detail, but when you do a dropset or get a spot on rep 9, this is where it lives.
 - **Set** - Reps done without meaningful rest. If you rested, it's a new set. If you dropped the weight and kept going, same set. Carries load, reps, RPE, set type, and optional per-rep breakdown.
 - **Exercise** - A named movement with a timestamp and an array of sets. `started_at` lets apps derive exercise order without a fragile sequence number.
 - **Session** - The workout. Start time, optional end time, location, and exercises.
 - **Metadata** - The envelope. Schema version, which app created the file, optional athlete identifier.
 
 ## Philosophy
+
+> This section and below uses MUST, SHOULD, and MAY as defined in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119). Full normative spec: [SPECIFICATION.md](SPECIFICATION.md).
 
 ### Why JSON, not binary
 
@@ -101,26 +102,26 @@ You bench 8 reps at 100 kg, drop to 80 kg for 4 more, and your spotter helps on 
 ```json
 {
   "reps_completed": 12,
-  "load_kg": 100,
+  "load": 100,
   "set_type": "dropset",
   "reps": [
-    { "load_kg": 100 },
-    { "load_kg": 100 },
-    { "load_kg": 100 },
-    { "load_kg": 100 },
-    { "load_kg": 100 },
-    { "load_kg": 100 },
-    { "load_kg": 100 },
-    { "load_kg": 100 },
-    { "load_kg": 80 },
-    { "load_kg": 80 },
-    { "load_kg": 80 },
-    { "load_kg": 80, "assisted": true }
+    { "load": 100 },
+    { "load": 100 },
+    { "load": 100 },
+    { "load": 100 },
+    { "load": 100 },
+    { "load": 100 },
+    { "load": 100 },
+    { "load": 100 },
+    { "load": 80 },
+    { "load": 80 },
+    { "load": 80 },
+    { "load": 80, "assisted": true }
   ]
 }
 ```
 
-The per-rep `reps[]` array is OPTIONAL. A simple app writes `reps_completed` and `load_kg` at the set level and calls it a day. But the spec MUST support per-rep data for when someone needs it: a coach reviewing form breakdown, a researcher tracking velocity per rep.
+The per-rep `reps[]` array is OPTIONAL. A simple app writes `reps_completed` and `load` at the set level and calls it a day. But the spec MUST support per-rep data for when someone needs it: a coach reviewing form breakdown, a researcher tracking velocity per rep.
 
 ### Why timestamps, not sequence numbers
 
@@ -193,15 +194,16 @@ You log a pull day. Lat pulldown performance dropped: fewer reps, higher RPE, ea
   "meta": { "source": "pullday-tracker" },
   "session": {
     "started_at": "2026-02-26T07:00:00Z",
+    "load_unit": "kg",
     "exercises": [
       {
         "display_name": "Barbell Row",
         "started_at": "2026-02-26T07:02:00Z",
         "muscle_groups": ["lats", "rhomboids", "biceps"],
         "sets": [
-          { "reps_completed": 10, "load_kg": 80, "rpe": 7 },
-          { "reps_completed": 10, "load_kg": 80, "rpe": 8 },
-          { "reps_completed": 8, "load_kg": 80, "rpe": 9 }
+          { "reps_completed": 10, "load": 80, "rpe": 7 },
+          { "reps_completed": 10, "load": 80, "rpe": 8 },
+          { "reps_completed": 8, "load": 80, "rpe": 9 }
         ]
       },
       {
@@ -209,9 +211,9 @@ You log a pull day. Lat pulldown performance dropped: fewer reps, higher RPE, ea
         "started_at": "2026-02-26T07:18:00Z",
         "muscle_groups": ["lats", "biceps"],
         "sets": [
-          { "reps_completed": 8, "load_kg": 0, "rpe": 8 },
-          { "reps_completed": 7, "load_kg": 0, "rpe": 9 },
-          { "reps_completed": 5, "load_kg": 0, "rpe": 10, "is_failure": true }
+          { "reps_completed": 8, "load": 0, "rpe": 8 },
+          { "reps_completed": 7, "load": 0, "rpe": 9 },
+          { "reps_completed": 5, "load": 0, "rpe": 10, "is_failure": true }
         ]
       },
       {
@@ -219,9 +221,9 @@ You log a pull day. Lat pulldown performance dropped: fewer reps, higher RPE, ea
         "started_at": "2026-02-26T07:35:00Z",
         "muscle_groups": ["lats", "biceps"],
         "sets": [
-          { "reps_completed": 8, "load_kg": 60, "rpe": 8 },
-          { "reps_completed": 6, "load_kg": 60, "rpe": 9 },
-          { "reps_completed": 5, "load_kg": 60, "rpe": 10, "is_failure": true }
+          { "reps_completed": 8, "load": 60, "rpe": 8 },
+          { "reps_completed": 6, "load": 60, "rpe": 9 },
+          { "reps_completed": 5, "load": 60, "rpe": 10, "is_failure": true }
         ]
       }
     ]
@@ -252,10 +254,11 @@ The bare essentials. Enough to reconstruct what you did.
 | `wodis_version` | root |
 | `meta.source` | meta |
 | `session.started_at` | session |
+| `session.load_unit` | session |
 | `exercise.display_name` | exercise |
 | `exercise.started_at` | exercise |
 | `set.reps_completed` | set |
-| `set.load_kg` | set |
+| `set.load` | set |
 
 A Level 1 file is what a simple logging app exports. Exercise name, when it happened, how many reps, how much weight. Valid and useful.
 
@@ -311,7 +314,7 @@ Every object in WODIS (metadata, session, exercise, set, rep) has an `_extra` fi
 ```json
 {
   "reps_completed": 5,
-  "load_kg": 120,
+  "load": 120,
   "_extra": {
     "velocityapp": {
       "mean_concentric_velocity_ms": [0.75, 0.71, 0.65, 0.58, 0.50],
@@ -326,7 +329,7 @@ Every object in WODIS (metadata, session, exercise, set, rep) has an `_extra` fi
 ```json
 {
   "reps_completed": 8,
-  "load_kg": 60,
+  "load": 60,
   "_extra": {
     "tempoapp": {
       "tempo": "3-1-2-0",
@@ -379,7 +382,7 @@ Every object in WODIS (metadata, session, exercise, set, rep) has an `_extra` fi
 ```json
 {
   "reps_completed": 3,
-  "load_kg": 140,
+  "load": 140,
   "_extra": {
     "formcheck": {
       "video_url": "https://example.com/clips/deadlift-pr.mp4",
@@ -412,7 +415,7 @@ function exportToWODIS(workout):
         for each set in exercise:
             entry.sets.append({
                 reps_completed: set.reps,
-                load_kg: set.weight
+                load: set.weight
             })
         file.session.exercises.append(entry)
     return JSON.stringify(file)
@@ -447,6 +450,8 @@ Open a GitHub issue first to discuss the change. Once there's agreement, submit 
 - If changing the schema: update the schema file, examples, and SPECIFICATION.md.
 - If adding a new field: include a rationale for why it can't live in `_extra`.
 
+Be respectful. Have fun. And focus on helping better solve the user jobs that this product seeks to address.
+
 ### Versioning
 
 WODIS follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
@@ -459,10 +464,8 @@ WODIS follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 
 - JSON field names in `snake_case`
 - Timestamps in ISO 8601
-- Weight in kilograms
+- Weight in kg or lbs (declared by `load_unit`)
 - Durations in seconds
-
-Be respectful. Have fun. And focus on helping better solve the user jobs that this product seeks to address.
 
 ## License
 

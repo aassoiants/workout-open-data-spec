@@ -7,6 +7,7 @@
   },
   "session": {
     "started_at": "2026-02-27T06:30:00Z",
+    "load_unit": "lbs",
     "ended_at": "2026-02-27T07:28:00Z",
     "location": "Iron Works Gym",
     "split_type": "push",
@@ -20,27 +21,27 @@
           {
             "set_type": "warmup",
             "reps_completed": 10,
-            "load_kg": 40,
+            "load": 40,
             "rest_seconds_actual": 0
           },
           {
             "set_type": "working",
             "reps_completed": 8,
-            "load_kg": 77.5,
+            "load": 77.5,
             "rpe": 7,
             "rest_seconds_actual": 120
           },
           {
             "set_type": "working",
             "reps_completed": 7,
-            "load_kg": 77.5,
+            "load": 77.5,
             "rpe": 8,
             "rest_seconds_actual": 150
           },
           {
             "set_type": "working",
             "reps_completed": 6,
-            "load_kg": 77.5,
+            "load": 77.5,
             "rpe": 9.5,
             "is_failure": true,
             "rest_seconds_actual": 180
@@ -55,21 +56,21 @@
           {
             "set_type": "working",
             "reps_completed": 10,
-            "load_kg": 27.5,
+            "load": 27.5,
             "rpe": 7,
             "rest_seconds_actual": 90
           },
           {
             "set_type": "working",
             "reps_completed": 9,
-            "load_kg": 27.5,
+            "load": 27.5,
             "rpe": 8,
             "rest_seconds_actual": 90
           },
           {
             "set_type": "working",
             "reps_completed": 8,
-            "load_kg": 27.5,
+            "load": 27.5,
             "rpe": 8.5,
             "rest_seconds_actual": 90
           }
@@ -83,7 +84,7 @@
           {
             "set_type": "working",
             "reps_completed": 12,
-            "load_kg": 11.25,
+            "load": 11.25,
             "rpe": 7.5,
             "superset_id": "A",
             "superset_sequence": 1,
@@ -92,7 +93,7 @@
           {
             "set_type": "working",
             "reps_completed": 11,
-            "load_kg": 11.25,
+            "load": 11.25,
             "rpe": 8.5,
             "superset_id": "A",
             "superset_sequence": 1,
@@ -108,7 +109,7 @@
           {
             "set_type": "working",
             "reps_completed": 15,
-            "load_kg": 22.5,
+            "load": 22.5,
             "rpe": 7,
             "superset_id": "A",
             "superset_sequence": 2,
@@ -117,7 +118,7 @@
           {
             "set_type": "working",
             "reps_completed": 13,
-            "load_kg": 22.5,
+            "load": 22.5,
             "rpe": 8,
             "superset_id": "A",
             "superset_sequence": 2,
@@ -133,21 +134,21 @@
           {
             "set_type": "working",
             "reps_completed": 15,
-            "load_kg": 8,
+            "load": 8,
             "rpe": 7,
             "rest_seconds_actual": 60
           },
           {
             "set_type": "working",
             "reps_completed": 14,
-            "load_kg": 8,
+            "load": 8,
             "rpe": 8,
             "rest_seconds_actual": 60
           },
           {
             "set_type": "working",
             "reps_completed": 12,
-            "load_kg": 8,
+            "load": 8,
             "rpe": 9,
             "rest_seconds_actual": 60
           }

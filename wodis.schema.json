@@ -60,7 +60,7 @@
       "title": "Session",
       "description": "A single workout session, anchored by a start time and containing one or more exercises.",
       "type": "object",
-      "required": ["started_at", "exercises"],
+      "required": ["started_at", "load_unit", "exercises"],
       "additionalProperties": true,
       "properties": {
         "started_at": {
@@ -68,6 +68,12 @@
           "type": "string",
           "format": "date-time",
           "description": "ISO 8601 date-time when the session began."
+        },
+        "load_unit": {
+          "title": "Load Unit",
+          "type": "string",
+          "enum": ["kg", "lbs"],
+          "description": "Unit for all load values in this document."
         },
         "ended_at": {
           "title": "Ended At",
@@ -170,7 +176,7 @@
       "title": "Set",
       "description": "A single set within an exercise, recording reps completed, load used, and optional metadata like RPE, RIR, and form flags.",
       "type": "object",
-      "required": ["reps_completed", "load_kg"],
+      "required": ["reps_completed", "load"],
       "additionalProperties": true,
       "properties": {
         "reps_completed": {
@@ -179,10 +185,10 @@
           "minimum": 0,
           "description": "Number of repetitions completed in this set."
         },
-        "load_kg": {
-          "title": "Load (kg)",
+        "load": {
+          "title": "Load",
           "type": "number",
-          "description": "Load in kilograms used for this set. Negative values indicate assisted weight (e.g. assisted pull-ups). Zero for bodyweight."
+          "description": "Weight used for this set in the unit declared by session.load_unit. Negative values indicate assisted weight. Zero for bodyweight."
         },
         "reps": {
           "title": "Reps",
@@ -271,13 +277,13 @@
       "title": "Rep",
       "description": "Per-repetition data capturing individual rep load and completion status for detailed tracking.",
       "type": "object",
-      "required": ["load_kg"],
+      "required": ["load"],
       "additionalProperties": true,
       "properties": {
-        "load_kg": {
-          "title": "Load (kg)",
+        "load": {
+          "title": "Load",
           "type": "number",
-          "description": "Load in kilograms for this specific repetition (useful for drop-within-set or variable-load protocols)."
+          "description": "Weight for this specific repetition in the unit declared by session.load_unit (useful for drop-within-set or variable-load protocols)."
         },
         "assisted": {
           "title": "Assisted",

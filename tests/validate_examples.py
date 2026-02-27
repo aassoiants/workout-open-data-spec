@@ -10,7 +10,6 @@ ROOT = Path(__file__).resolve().parent.parent
 SCHEMA_PATH = ROOT / "wodis.schema.json"
 EXAMPLE_DIRS = [
     ROOT / "examples",
-    ROOT / "examples" / "real-world",
 ]
 
 

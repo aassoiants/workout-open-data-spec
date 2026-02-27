@@ -5,6 +5,7 @@
   },
   "session": {
     "started_at": "2026-02-26T07:30:00Z",
+    "load_unit": "kg",
     "exercises": [
       {
         "display_name": "Squat",
@@ -12,7 +13,7 @@
         "sets": [
           {
             "reps_completed": 5,
-            "load_kg": 100
+            "load": 100
           }
         ]
       }

@@ -7,6 +7,7 @@
   },
   "session": {
     "started_at": "2026-02-27T07:00:00Z",
+    "load_unit": "kg",
     "ended_at": "2026-02-27T08:15:00Z",
     "location": "Iron Temple Gym",
     "split_type": "push",
@@ -36,7 +37,7 @@
         "sets": [
           {
             "reps_completed": 5,
-            "load_kg": 60,
+            "load": 60,
             "set_type": "warmup",
             "rpe": 4,
             "rir": 5,
@@ -46,7 +47,7 @@
           },
           {
             "reps_completed": 8,
-            "load_kg": 100,
+            "load": 100,
             "set_type": "working",
             "rpe": 7,
             "rir": 3,
@@ -61,7 +62,7 @@
           },
           {
             "reps_completed": 8,
-            "load_kg": 100,
+            "load": 100,
             "set_type": "working",
             "rpe": 8,
             "rir": 2,
@@ -69,7 +70,7 @@
           },
           {
             "reps_completed": 12,
-            "load_kg": 100,
+            "load": 100,
             "set_type": "dropset",
             "rpe": 10,
             "rir": 0,
@@ -78,18 +79,18 @@
             "form_flags": ["lumbar_flexion"],
             "notes": "Dropset: 100kg x8, then 80kg x4. Spotter assisted rep 11, rep 12 partial.",
             "reps": [
-              { "load_kg": 100, "completed": true },
-              { "load_kg": 100, "completed": true },
-              { "load_kg": 100, "completed": true },
-              { "load_kg": 100, "completed": true },
-              { "load_kg": 100, "completed": true },
-              { "load_kg": 100, "completed": true },
-              { "load_kg": 100, "completed": true },
-              { "load_kg": 100, "completed": true },
-              { "load_kg": 80, "completed": true },
-              { "load_kg": 80, "completed": true },
-              { "load_kg": 80, "completed": true, "assisted": true },
-              { "load_kg": 80, "completed": true, "partial": true }
+              { "load": 100, "completed": true },
+              { "load": 100, "completed": true },
+              { "load": 100, "completed": true },
+              { "load": 100, "completed": true },
+              { "load": 100, "completed": true },
+              { "load": 100, "completed": true },
+              { "load": 100, "completed": true },
+              { "load": 100, "completed": true },
+              { "load": 80, "completed": true },
+              { "load": 80, "completed": true },
+              { "load": 80, "completed": true, "assisted": true },
+              { "load": 80, "completed": true, "partial": true }
             ]
           }
         ]
@@ -102,7 +103,7 @@
         "sets": [
           {
             "reps_completed": 10,
-            "load_kg": 30,
+            "load": 30,
             "set_type": "working",
             "rpe": 7,
             "rir": 3,
@@ -113,7 +114,7 @@
           },
           {
             "reps_completed": 10,
-            "load_kg": 30,
+            "load": 30,
             "set_type": "working",
             "rpe": 8,
             "rir": 2,
@@ -124,7 +125,7 @@
           },
           {
             "reps_completed": 8,
-            "load_kg": 30,
+            "load": 30,
             "set_type": "working",
             "rpe": 9,
             "rir": 1,
@@ -139,7 +140,7 @@
         "sets": [
           {
             "reps_completed": 15,
-            "load_kg": 25,
+            "load": 25,
             "set_type": "working",
             "rpe": 7,
             "rir": 3,
@@ -147,7 +148,7 @@
           },
           {
             "reps_completed": 12,
-            "load_kg": 25,
+            "load": 25,
             "set_type": "working",
             "rpe": 8.5,
             "rir": 1,
@@ -155,7 +156,7 @@
           },
           {
             "reps_completed": 10,
-            "load_kg": 25,
+            "load": 25,
             "set_type": "failure",
             "rpe": 10,
             "rir": 0,
