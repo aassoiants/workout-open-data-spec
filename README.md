@@ -56,7 +56,7 @@ A minimal Level 1 file. One exercise, one set, only required fields:
 }
 ```
 
-That's it. Fourteen lines. A complete, valid WODIS file.
+That's it. A complete, valid WODIS file.
 
 ## The Data Hierarchy
 
