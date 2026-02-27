@@ -1,0 +1,21 @@
+{
+  "wodis_version": "1.0.0",
+  "meta": {
+    "source": "my-gym-app"
+  },
+  "session": {
+    "started_at": "2026-02-26T07:30:00Z",
+    "exercises": [
+      {
+        "display_name": "Squat",
+        "started_at": "2026-02-26T07:32:00Z",
+        "sets": [
+          {
+            "reps_completed": 5,
+            "load_kg": 100
+          }
+        ]
+      }
+    ]
+  }
+}
