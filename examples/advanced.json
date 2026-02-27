@@ -1,0 +1,169 @@
+{
+  "wodis_version": "1.0.0",
+  "meta": {
+    "source": "GymTracker Pro",
+    "entry_method": "device_sync",
+    "athlete": "Alex"
+  },
+  "session": {
+    "started_at": "2026-02-27T07:00:00Z",
+    "ended_at": "2026-02-27T08:15:00Z",
+    "location": "Iron Temple Gym",
+    "split_type": "push",
+    "notes": "Felt good after solid sleep. Pushed intensity on bench.",
+    "_extra": {
+      "whoop": {
+        "recovery_score": 78,
+        "sleep_hours": 7.2
+      }
+    },
+    "exercises": [
+      {
+        "display_name": "Bench Press (Barbell)",
+        "started_at": "2026-02-27T07:05:00Z",
+        "canonical_ids": {
+          "wger": "192",
+          "exrx": "bench-press-barbell"
+        },
+        "muscle_groups": ["chest", "triceps", "anterior_deltoid"],
+        "notes": "Paused reps, controlled eccentric",
+        "_extra": {
+          "gymtracker": {
+            "bar_type": "olympic",
+            "grip_width": "medium"
+          }
+        },
+        "sets": [
+          {
+            "reps_completed": 5,
+            "load_kg": 60,
+            "set_type": "warmup",
+            "rpe": 4,
+            "rir": 5,
+            "rest_seconds_actual": 0,
+            "superset_id": "ss-1",
+            "superset_sequence": 1
+          },
+          {
+            "reps_completed": 8,
+            "load_kg": 100,
+            "set_type": "working",
+            "rpe": 7,
+            "rir": 3,
+            "rest_seconds_actual": 120,
+            "superset_id": "ss-1",
+            "superset_sequence": 1,
+            "_extra": {
+              "vitruve": {
+                "mean_concentric_velocity_ms": [0.45, 0.42, 0.38, 0.35, 0.32]
+              }
+            }
+          },
+          {
+            "reps_completed": 8,
+            "load_kg": 100,
+            "set_type": "working",
+            "rpe": 8,
+            "rir": 2,
+            "rest_seconds_actual": 150
+          },
+          {
+            "reps_completed": 12,
+            "load_kg": 100,
+            "set_type": "dropset",
+            "rpe": 10,
+            "rir": 0,
+            "rest_seconds_actual": 150,
+            "is_failure": true,
+            "form_flags": ["lumbar_flexion"],
+            "notes": "Dropset: 100kg x8, then 80kg x4. Spotter assisted rep 11, rep 12 partial.",
+            "reps": [
+              { "load_kg": 100, "completed": true },
+              { "load_kg": 100, "completed": true },
+              { "load_kg": 100, "completed": true },
+              { "load_kg": 100, "completed": true },
+              { "load_kg": 100, "completed": true },
+              { "load_kg": 100, "completed": true },
+              { "load_kg": 100, "completed": true },
+              { "load_kg": 100, "completed": true },
+              { "load_kg": 80, "completed": true },
+              { "load_kg": 80, "completed": true },
+              { "load_kg": 80, "completed": true, "assisted": true },
+              { "load_kg": 80, "completed": true, "partial": true }
+            ]
+          }
+        ]
+      },
+      {
+        "display_name": "Incline Dumbbell Press",
+        "started_at": "2026-02-27T07:30:00Z",
+        "muscle_groups": ["chest", "anterior_deltoid", "triceps"],
+        "variation": "incline",
+        "sets": [
+          {
+            "reps_completed": 10,
+            "load_kg": 30,
+            "set_type": "working",
+            "rpe": 7,
+            "rir": 3,
+            "rest_seconds_actual": 90,
+            "superset_id": "ss-1",
+            "superset_sequence": 2,
+            "transition_time_seconds": 15
+          },
+          {
+            "reps_completed": 10,
+            "load_kg": 30,
+            "set_type": "working",
+            "rpe": 8,
+            "rir": 2,
+            "rest_seconds_actual": 90,
+            "superset_id": "ss-1",
+            "superset_sequence": 2,
+            "transition_time_seconds": 12
+          },
+          {
+            "reps_completed": 8,
+            "load_kg": 30,
+            "set_type": "working",
+            "rpe": 9,
+            "rir": 1,
+            "rest_seconds_actual": 90
+          }
+        ]
+      },
+      {
+        "display_name": "Triceps Rope Pushdown",
+        "started_at": "2026-02-27T07:50:00Z",
+        "muscle_groups": ["triceps"],
+        "sets": [
+          {
+            "reps_completed": 15,
+            "load_kg": 25,
+            "set_type": "working",
+            "rpe": 7,
+            "rir": 3,
+            "rest_seconds_actual": 60
+          },
+          {
+            "reps_completed": 12,
+            "load_kg": 25,
+            "set_type": "working",
+            "rpe": 8.5,
+            "rir": 1,
+            "rest_seconds_actual": 60
+          },
+          {
+            "reps_completed": 10,
+            "load_kg": 25,
+            "set_type": "failure",
+            "rpe": 10,
+            "rir": 0,
+            "rest_seconds_actual": 60,
+            "is_failure": true
+          }
+        ]
+      }
+    ]
+  }
+}
